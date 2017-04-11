@@ -1,23 +1,12 @@
 @charset "utf-8";
 
-/*登录hyf*/
+@import "_vars.less";
 
-.lecheng-common-login-box ul,.lecheng-common-login-box li,.lecheng-common-login-box p,.lecheng-common-login-box h1,.lecheng-common-login-box h2,.lecheng-common-login-box h3,.lecheng-common-login-box h4,.lecheng-common-login-box h5,.lecheng-common-login-box h6,.lecheng-common-login-box ol,.lecheng-common-login-box td,.lecheng-common-login-box dd,.lecheng-common-login-box dl,.lecheng-common-login-box button,.lecheng-common-login-box input,.lecheng-common-login-box select,.lecheng-common-login-box textarea,.lecheng-common-login-box blockquote {
-    padding: 0;
-    margin: 0;
-}
-.lecheng-common-login-box a {
-    text-decoration: none;
-    font-weight: normal;
-}
-.fixed .lecheng-common-login-box {
-    display: block;
-}
- .lecheng-common-login-box {
+.lecheng-common-login-box {
     position: fixed;
     display: none;
     top: 20%;
-    background-color: white;
+    background-color: @bg-color;
     display: block;
     left: 50%;
     width: 720px;
@@ -26,6 +15,7 @@
     font-family: "Microsoft Yahei", "Hiragino Sans GB", sans-serif;
     -webkit-font-smoothing: antialiased
 }
+
 .lecheng-common-login-box:before {
     position: fixed;
     content: ' ';
@@ -37,16 +27,44 @@
     opacity: .4;
     z-index: -1
 }
+
+.lecheng-common-login-box a {
+    text-decoration: none;
+    font-weight: normal;
+}
+
+.lecheng-common-login-box ul,
+.lecheng-common-login-box li,
+.lecheng-common-login-box p,
+.lecheng-common-login-box h1,
+.lecheng-common-login-box h2,
+.lecheng-common-login-box h3,
+.lecheng-common-login-box h4,
+.lecheng-common-login-box h5,
+.lecheng-common-login-box h6,
+.lecheng-common-login-box ol,
+.lecheng-common-login-box td,
+.lecheng-common-login-box dd,
+.lecheng-common-login-box dl,
+.lecheng-common-login-box button,
+.lecheng-common-login-box input,
+.lecheng-common-login-box select,
+.lecheng-common-login-box textarea,
+.lecheng-common-login-box blockquote {
+    padding: 0;
+    margin: 0;
+}
+
 .lecheng-common-login-box div {
-    background-color: white;
+    background-color: @bg-color;
     text-align: center;
 }
 .lecheng-common-login-box h3 {
     padding-left: 25px;
     margin: 0;
-    background-color: white;
+    background-color: @bg-color;
     text-align: left;
-    border-bottom: 1px solid #e6e6e6;
+    border-bottom: 1px solid @border-color;
     line-height: 36px;
     font-weight: normal
 }
@@ -55,20 +73,20 @@
     padding: 0 10px;
     margin-top: 5px;
     margin-right: 20px;
-    color: #515151;
+    color: @tab-font-color;
     font-size: 20px;
     border: 1px solid #fff;
-    border-bottom: 1px solid #e6e6e6;
+    border-bottom: 1px solid @border-color;
     margin-bottom: -1px;
     text-decoration: none;
 }
 .lecheng-common-login-box h3 .active {
-    border: 1px solid #e6e6e6;
+    border: 1px solid @border-color;
     border-bottom: 1px solid #fff;
-    color: #f1961f;
+    color: @tab-font-hover-color;
 }
 .lecheng-common-login-box h3 a:hover {
-    color: #f1961f;
+    color: @tab-font-hover-color;
 }
 .lecheng-common-login-box h3 .tab {
     float: left;
@@ -115,7 +133,7 @@
 }
 .lecheng-common-login-box .qrcode-wrap .qrcode {
     width: 80%;
-    border: 1px solid #e6e6e6;
+    border: 1px solid @border-color;
 }
 .lecheng-common-login-box .qrcode-wrap .info {
     width: 280px;
@@ -180,6 +198,9 @@
 ::placeholder {
     font-weight: bold;
 }
+.fixed .lecheng-common-login-box {
+    display: block;
+}
 .fixed .lecheng-common-login-box .phone-login-area .checkcode {
     float: left;
     width: 41%;
@@ -201,4 +222,4 @@
     border-radius: 2px;
     margin-right: 44px;
 }
-/*登录hyf end*/
+

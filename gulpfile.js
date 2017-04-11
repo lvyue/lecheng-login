@@ -1,0 +1,214 @@
+/**
+ * Gulp Packages
+ */
+
+// General
+var gulp = require('gulp');
+var fs = require('fs');
+var del = require('del');
+var lazypipe = require('lazypipe');
+var plumber = require('gulp-plumber');
+var flatten = require('gulp-flatten');
+var tap = require('gulp-tap');
+var rename = require('gulp-rename');
+var header = require('gulp-header');
+var footer = require('gulp-footer');
+var watch = require('gulp-watch');
+var livereload = require('gulp-livereload');
+var package = require('./package.json');
+
+// Scripts and tests
+var jshint = require('gulp-jshint');
+var stylish = require('jshint-stylish');
+var concat = require('gulp-concat');
+var uglify = require('gulp-uglify');
+
+// Styles
+var less = require('gulp-less');
+var prefix = require('gulp-autoprefixer');
+var minify = require('gulp-cssnano');
+
+
+
+/**
+ * Paths to project folders
+ */
+
+var paths = {
+    input: 'src/**/*',
+    output: 'dist/',
+    scripts: {
+        input: 'src/js/*',
+        lint: 'src/js/**',
+        output: 'dist/js/'
+    },
+    styles: {
+        input: 'src/less/**/*.less',
+        output: 'dist/css/'
+    },
+    images: {
+        input: 'src/img/*',
+        output: 'dist/img/'
+    },
+    static: {
+        input: 'src/static/*',
+        output: 'dist/'
+    }
+};
+
+
+/**
+ * Template for banner to add to file headers
+ */
+
+var banner = {
+    full: '/*!\n' +
+        ' * <%= package.name %> v<%= package.version %>: <%= package.description %>\n' +
+        ' * (c) ' + new Date().getFullYear() + ' <%= package.author.name %>\n' +
+        ' * MIT License\n' +
+        ' * <%= package.repository.url %>\n' +
+        ' */\n\n',
+    min: '/*!' +
+        ' <%= package.name %> v<%= package.version %>' +
+        ' | (c) ' + new Date().getFullYear() + ' <%= package.author.name %>' +
+        ' | MIT License' +
+        ' | <%= package.repository.url %>' +
+        ' */\n'
+};
+
+
+/**
+ * Gulp Taks
+ */
+
+gulp.task('build:scripts', ['clean:dist'], function () {
+    var jsTasks = lazypipe()
+        .pipe(header, banner.full, {
+            package: package
+        })
+        .pipe(gulp.dest, paths.scripts.output);
+
+    return gulp.src(paths.scripts.input)
+        .pipe(plumber())
+        .pipe(tap(function (file, t) {
+            if (file.isDirectory()) {
+                var name = file.relative + '.js';
+                return gulp.src(file.path + '/*.js')
+                    .pipe(concat(name))
+                    .pipe(jsTasks());
+            }
+        }))
+        .pipe(jsTasks());
+});
+// Process, lint, and minify less files
+gulp.task('build:styles', ['clean:dist'], function () {
+    return gulp.src(paths.styles.input)
+        .pipe(plumber())
+        .pipe(less({
+            outputStyle: 'expanded',
+            sourceComments: true
+        }))
+        .pipe(flatten())
+        .pipe(prefix({
+            browsers: ['last 2 version', '> 1%'],
+            cascade: true,
+            remove: true
+        }))
+        .pipe(header(banner.full, {
+            package: package
+        }))
+        .pipe(gulp.dest(paths.styles.output))
+        .pipe(rename({
+            suffix: '.min'
+        }))
+        .pipe(minify({
+            discardComments: {
+                removeAll: true
+            }
+        }))
+        .pipe(header(banner.min, {
+            package: package
+        }))
+        .pipe(gulp.dest(paths.styles.output))
+        .pipe(livereload());
+});
+
+// Copy image files into output folder
+gulp.task('build:images', ['clean:dist'], function () {
+    return gulp.src(paths.images.input)
+        .pipe(plumber())
+        .pipe(gulp.dest(paths.images.output));
+});
+
+// Copy static files into output folder
+gulp.task('build:static', ['clean:dist'], function () {
+    return gulp.src(paths.static.input)
+        .pipe(plumber())
+        .pipe(gulp.dest(paths.static.output));
+});
+
+// Lint scripts
+gulp.task('lint:scripts', function () {
+    return gulp.src(paths.scripts.lint)
+        .pipe(plumber())
+        .pipe(jshint())
+        .pipe(jshint.reporter('jshint-stylish'));
+});
+
+// Remove pre-existing content from output and test folders
+gulp.task('clean:dist', function () {
+    del.sync([
+        paths.output
+    ]);
+});
+
+// Copy distribution files to docs
+gulp.task('copy:dist', ['compile', 'clean:docs'], function () {
+    return gulp.src(paths.output + '/**')
+        .pipe(plumber())
+        .pipe(gulp.dest(paths.docs.output + '/dist'));
+});
+
+// Copy documentation assets to docs
+gulp.task('copy:assets', ['clean:docs'], function () {
+    return gulp.src(paths.docs.assets)
+        .pipe(plumber())
+        .pipe(gulp.dest(paths.docs.output + '/assets'));
+});
+
+// Remove prexisting content from docs folder
+gulp.task('clean:docs', function () {
+    return del.sync(paths.docs.output);
+});
+
+// Spin up livereload server and listen for file changes
+gulp.task('listen', function () {
+    livereload.listen();
+    gulp.watch(paths.input, ['default']);
+});
+
+
+/**
+ * Task Runners
+ */
+
+// Compile files
+gulp.task('compile', [
+    'lint:scripts',
+    'clean:dist',
+    'build:scripts',
+    'build:styles',
+    'build:images',
+    'build:static'
+]);
+
+// Compile files and generate docs (default)
+gulp.task('default', [
+    'compile',
+]);
+
+// Compile files and generate docs when something changes
+gulp.task('watch', [
+    'listen',
+    'default'
+]);

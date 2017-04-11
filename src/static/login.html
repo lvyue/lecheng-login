@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title></title>
+	<!--<link rel="stylesheet" type="text/css" href="./css/login.css?v=123478gff">-->
+	<style type="text/css">
+		.user-auth {
+			width: 80px;
+			height: 30px;
+			line-height: 30px;
+			background-color: #f90;
+			color: #fff;
+			border-radius: 5px;
+			text-align: center;
+			cursor: pointer;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="user-auth">登录</div>
+</body>
+<script type="text/javascript" src="../node_modules/jquery/dist/jquery.min.js"></script>
+
+<script type="text/javascript">
+	(function () {
+		var hm = document.createElement("script");
+		hm.src = "./login.bundle.min.js?_v=" + Date.now();
+		var ss = document.getElementsByTagName("script");
+		var s = ss[ss.length - 1];
+		s.parentNode.appendChild(hm);
+	})();
+</script>
+<!--<script>
+	$(function () {
+		Login.config('server', "http://www.itgcs.wang");
+		Login.config('callback', (user)=>{
+			console.log(user);
+		});
+	});
+</script>-->
+
+</html>
